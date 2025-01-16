@@ -1,0 +1,115 @@
+<div class="row animated fadeIn fast">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+
+                <input id="txtSearchUser" type="text" class="form-control" [readOnly]="loading"
+                    placeholder="Buscar usuarios por nombre...">
+                <!-- <small *ngIf="searching" class="text-muted">buscando...</small> -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="loading" class="row animated fadeIn fast">
+    <div class="col-12">
+        <div class="alert alert-secondary text-center">
+            <h4 class="alert-heading">Cargando...</h4>
+            <i class="fa fa-spin fa-3x fa-spinner"></i>
+            <p class="mb-0">¡Espere por favor!</p>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="!loading" class="row animated fadeIn fast">
+
+    <div class="col-12">
+
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">
+                    Total de usuarios ({{totalUser}})
+                </h4>
+                <h6 *ngIf="!searching" class="card-subtitle">Usuarios registrados en la aplicación</h6>
+                <h6 *ngIf="searching" class="card-subtitle">Usuarios encontrados en la aplicación</h6>
+
+                <div class="table-responsive">
+                    <table class="table table-bordered color-bordered-table muted-bordered-table">
+                        <thead>
+                            <tr>
+                                <th>Avatar</th>
+                                <th>Nombre</th>
+                                <th>Correo</th>
+                                <th class="widthRole">Rol</th>
+                                <th>Auth</th>
+                                <th class="text-nowrap">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let user of users; let i=index">
+                                <td class="text-center align-middle">
+                                    <img (click)="changeImage(user)" class="img-circle pointer" width="50px"
+                                        [src]="user.urlImage" [alt]="user.name">
+                                </td>
+                                <td class="align-middle"> {{user.name}} </td>
+                                <td class="align-middle"> {{user.email}} </td>
+                                <td>
+                                    <select [disabled]="user.status==='I'" class="form-control" [(ngModel)]="user.role"
+                                        (change)="changeUserRole(user, i)">
+                                        <option value="ADMIN_ROLE">Admin</option>
+                                        <option value="USER_ROLE">User</option>
+                                    </select>
+                                </td>
+                                <td class="text-center align-middle">
+
+                                    <span *ngIf="user.status==='I'"
+                                        class="badge badge-pill badge-danger">Inactivo</span>
+                                    <div *ngIf="user.status === 'A'">
+                                        <span *ngIf="user.google" class="badge badge-pill badge-success">Google</span>
+                                        <span *ngIf="!user.google" class="badge badge-pill badge-info">Email</span>
+                                    </div>
+
+                                </td>
+                                <td class="text-nowrap text-center align-middle">
+
+                                    <button class="btn btn-sm btn-danger" *ngIf="user.status === 'A'"
+                                        (click)="deleteUser(user, i)" [disabled]="user.id === userId"
+                                        [class.disabled]="user.id === userId">
+                                        Borrar
+                                    </button>
+
+                                    <button class="btn btn-sm btn-success" *ngIf="user.status === 'I'"
+                                        (click)="activeUser(user, i)" [disabled]="user.id === userId"
+                                        [class.disabled]="user.id === userId">
+                                        Activar
+                                    </button>
+
+                                </td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row ">
+                    <div class="col-auto mr-auto text-left">
+                        <button class="btn btn-secondary" [disabled]="!hasPrevious" [class.disabled]="!hasPrevious"
+                            (click)="toPrevious()">
+                            <i class="fa  fa-caret-left"></i>
+                            Anteriores
+                        </button>
+                        <button class="btn btn-secondary ml-sm-2 mt-2 mt-sm-0" [disabled]="!hasNext"
+                            [class.disabled]="!hasNext" (click)="toNext()">
+                            Siguientes
+                            <i class="fa  fa-caret-right"></i>
+                        </button>
+                    </div>
+                    <div class="col-auto text-muted text-right align-middle">
+                        <span class="ml-2">{{showingEntries}}</span>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
